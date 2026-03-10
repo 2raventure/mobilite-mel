@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobilité Durable – Guichet Unique Métropole Européenne de Lille</title>
+<link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --vert: #004A4F;
+    --vert-hover: #003538;
+    --turquoise: #3ECDC5;
+    --turquoise-pale: #d6f5f3;
+    --turquoise-light: #edfaf9;
+    --fond: #FBF7F3;
+    --texte: #4D4D4D;
+    --blanc: #ffffff;
+    --orange: #c85a20;
+    --orange-pale: #fdf0e8;
+    --jaune: #d49800;
+    --jaune-pale: #fdf7e8;
+    --gris: #f0ece8;
+    --gris-bord: #ddd8d2;
+    --radius: 12px;
+    --shadow: 0 6px 28px rgba(0,74,79,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Asap', sans-serif;
+    background: var(--fond);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 12px;
+  }
+  .widget {
+    background: var(--blanc);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    max-width: 700px;
+    width: 100%;
+    overflow: hidden;
+    border: 1.5px solid #cce8e7;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--vert) 0%, #002e32 100%);
+    padding: 30px 36px 26px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(62,205,197,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header-badge {
+    display: inline-block;
+    background: var(--turquoise);
+    color: var(--vert);
+    font-family: 'Asap', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-family: 'Asap', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--blanc);
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+  .header h1 span { color: var(--turquoise); }
+  .header p {
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.72);
+    font-weight: 300;
+    max-width: 440px;
+    line-height: 1.5;
+  }
+
+  /* NAV */
+  .steps-nav {
+    display: flex;
+    background: var(--turquoise-light);
+    border-bottom: 1.5px solid #cce8e7;
+    padding: 0 36px;
+  }
+  .step-btn {
+    font-family: 'Asap', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #9abcbb;
+    padding: 13px 16px;
+    border: none;
+    background: none;
+    cursor: default;
+    border-bottom: 3px solid transparent;
+    transition: all 0.22s;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .step-btn.active { color: var(--vert); border-bottom-color: var(--turquoise); }
+  .step-btn.done { color: var(--turquoise); }
+  .step-btn.done::before { content: '✓ '; font-size: 10px; }
+
+  /* CONTENT */
+  .content { padding: 28px 36px; }
+  .etape { display: none; animation: fadeIn 0.3s ease; }
+  .etape.visible { display: block; }
+
+  /* QUESTION LABEL */
+  .question-label {
+    font-family: 'Asap', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--vert);
+    margin-bottom: 12px;
+    margin-top: 22px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .question-label:first-child { margin-top: 0; }
+  .question-label .num {
+    background: var(--turquoise);
+    color: var(--vert);
+    font-size: 11px;
+    font-weight: 800;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .optional-tag {
+    font-weight: 400;
+    color: #9aacac;
+    font-size: 12px;
+    margin-left: 2px;
+  }
+
+  /* SLIDER */
+  .slider-display {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  .slider-value {
+    font-family: 'Asap', sans-serif;
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--vert);
+    min-width: 90px;
+    line-height: 1;
+  }
+  .slider-label { font-size: 13px; color: var(--texte); font-weight: 400; line-height: 1.5; }
+  .slider-label em { color: #9aacac; font-style: italic; font-size: 12px; display: block; margin-top: 3px; }
+  input[type=range] {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    background: #d0e8e7;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--vert);
+    border: 3px solid var(--turquoise);
+    box-shadow: 0 2px 10px rgba(0,74,79,0.22);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
+  .slider-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 7px;
+    font-size: 11px;
+    color: #aabcbc;
+    font-weight: 500;
+  }
+
+  /* RADIO */
+  .radio-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+  .radio-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 15px;
+    border: 2px solid var(--gris-bord);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--blanc);
+  }
+  .radio-option:hover { border-color: var(--turquoise); background: var(--turquoise-light); }
+  .radio-option.selected { border-color: var(--vert); background: var(--turquoise-light); }
+  .radio-option input[type=radio] { display: none; }
+  .radio-dot {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid #b0c8c8;
+    flex-shrink: 0;
+    margin-top: 1px;
+    position: relative;
+    transition: all 0.18s;
+  }
+  .radio-option.selected .radio-dot { border-color: var(--vert); background: var(--vert); }
+  .radio-option.selected .radio-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 6px; height: 6px;
+    background: var(--turquoise);
+    border-radius: 50%;
+  }
+  .radio-text { font-size: 13.5px; color: var(--texte); line-height: 1.4; }
+  .radio-text b { font-weight: 700; color: var(--vert); }
+  .radio-text small { display: block; font-size: 11.5px; color: #8aacac; margin-top: 2px; }
+
+  /* SELECT */
+  .select-wrap { position: relative; margin-bottom: 4px; }
+  .select-wrap::after {
+    content: '▼';
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: var(--vert);
+    pointer-events: none;
+  }
+  select {
+    width: 100%;
+    padding: 13px 40px 13px 15px;
+    border: 2px solid var(--gris-bord);
+    border-radius: var(--radius);
+    font-family: 'Asap', sans-serif;
+    font-size: 13.5px;
+    color: var(--texte);
+    background: var(--blanc);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    transition: border-color 0.18s;
+  }
+  select:focus, select:hover { border-color: var(--turquoise); }
+
+  /* BOUTONS */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--vert);
+    color: #fff;
+    font-family: 'Asap', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 13px 26px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(0,74,79,0.22);
+  }
+  .btn-primary:hover { background: var(--vert-hover); transform: translateY(-1px); }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: transparent;
+    color: var(--vert);
+    font-family: 'Asap', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 11px 20px;
+    border-radius: var(--radius);
+    border: 2px solid var(--vert);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .btn-secondary:hover { background: var(--turquoise-light); }
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1.5px solid var(--gris);
+  }
+
+  /* STATUT PANELS */
+  .statut-panel {
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    border-left: 4px solid;
+    animation: fadeIn 0.3s ease;
+  }
+  .statut-panel.obligatoire { background: var(--orange-pale); border-color: var(--orange); }
+  .statut-panel.opportunite { background: var(--turquoise-light); border-color: var(--turquoise); }
+  .statut-panel.info { background: var(--fond); border-color: #c0d4d4; }
+  .statut-titre {
+    font-family: 'Asap', sans-serif;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .statut-panel.obligatoire .statut-titre { color: var(--orange); }
+  .statut-panel.opportunite .statut-titre { color: var(--vert); }
+  .statut-panel.info .statut-titre { color: #4a7a7a; }
+  .statut-panel p { font-size: 13px; color: var(--texte); line-height: 1.65; }
+  .statut-panel a { color: var(--vert); font-weight: 600; text-decoration: underline; }
+  .statut-panel a:hover { color: #007a74; }
+
+  /* PROFIL RECAP */
+  .profil-recap {
+    background: var(--fond);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    margin-bottom: 16px;
+    font-size: 12.5px;
+    color: #5a7a7a;
+    border: 1px solid var(--gris-bord);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .profil-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--turquoise-pale);
+    color: var(--vert);
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+
+  /* RESSOURCES */
+  .ressources-title {
+    font-family: 'Asap', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    color: #8aacac;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .ressource-cards { display: flex; flex-direction: column; gap: 8px; }
+  .ressource-card {
+    background: var(--fond);
+    border-radius: var(--radius);
+    padding: 13px 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    border: 1.5px solid var(--gris-bord);
+    transition: all 0.18s;
+  }
+  .ressource-card:hover { border-color: var(--turquoise); background: var(--turquoise-light); }
+  .ressource-icon {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .rc-body { flex: 1; min-width: 0; }
+  .rc-name {
+    font-family: 'Asap', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--vert);
+    margin-bottom: 3px;
+  }
+  .rc-desc { font-size: 12px; color: var(--texte); line-height: 1.45; }
+  .rc-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .rc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--vert);
+    background: rgba(0,74,79,0.07);
+    padding: 4px 11px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .rc-link:hover { background: var(--vert); color: #fff; }
+  .rc-link.opport { color: #007a74; background: rgba(62,205,197,0.18); }
+  .rc-link.opport:hover { background: var(--turquoise); color: var(--vert); }
+
+  /* FAQ */
+  .faq-section {
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1.5px solid var(--gris);
+  }
+  .faq-title {
+    font-family: 'Asap', sans-serif;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--vert);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .faq-item {
+    margin-bottom: 6px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1.5px solid var(--gris-bord);
+  }
+  .faq-q {
+    padding: 12px 15px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--texte);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--blanc);
+    transition: background 0.15s;
+    gap: 10px;
+    user-select: none;
+  }
+  .faq-q:hover { background: var(--turquoise-light); }
+  .faq-arrow { font-size: 10px; color: var(--turquoise); transition: transform 0.2s; flex-shrink: 0; }
+  .faq-q.open .faq-arrow { transform: rotate(180deg); }
+  .faq-a {
+    display: none;
+    padding: 13px 15px;
+    font-size: 12.5px;
+    color: var(--texte);
+    line-height: 1.65;
+    background: var(--turquoise-light);
+    border-top: 1px solid #cce8e7;
+  }
+  .faq-a a { color: var(--vert); font-weight: 600; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--fond);
+    padding: 14px 36px;
+    border-top: 1.5px solid var(--gris-bord);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .footer-text { font-size: 11px; color: #9aacac; }
+  .footer-links { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+  .footer-logo {
+    font-family: 'Asap', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--vert);
+    background: var(--blanc);
+    padding: 3px 9px;
+    border-radius: 5px;
+    border: 1px solid #cce8e7;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .footer-logo:hover { background: var(--turquoise-pale); border-color: var(--turquoise); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 520px) {
+    .content { padding: 20px 18px; }
+    .header { padding: 22px 18px; }
+    .steps-nav { padding: 0 18px; }
+    .footer { padding: 12px 18px; }
+    .step-btn { font-size: 10px; padding: 12px 8px; }
+    .slider-value { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="widget" id="widget">
+
+  <div class="header">
+    <div class="header-badge">🌿 Guichet Unique Mobilité</div>
+    <h1>Mobilité Durable<br><span>Employeur</span></h1>
+    <p>Découvrez vos obligations, vos opportunités et les ressources disponibles sur le territoire de la Métropole Européenne de Lille.</p>
+  </div>
+
+  <div class="steps-nav">
+    <button class="step-btn active" id="nav1">① Mon profil</button>
+    <button class="step-btn" id="nav2">② Mes obligations</button>
+    <button class="step-btn" id="nav3">③ Mes ressources</button>
+  </div>
+
+  <div class="content">
+
+    <!-- ÉTAPE 1 -->
+    <div class="etape visible" id="etape1">
+
+      <div class="question-label"><span class="num">1</span>Combien de salariés compte votre structure ?</div>
+      <div class="slider-display">
+        <div class="slider-value" id="sliderVal">0</div>
+        <div class="slider-label">
+          salarié(s)
+          <em id="sliderHint">Déplacez le curseur</em>
+        </div>
+      </div>
+      <input type="range" id="slider" min="0" max="300" value="0" oninput="updateSlider(this)" />
+      <div class="slider-ticks">
+        <span>0</span><span>20</span><span>50</span><span>100</span><span>200</span><span>250</span><span>+250</span>
+      </div>
+
+      <div class="question-label" style="margin-top:24px"><span class="num">2</span>Votre site est-il domicilié sur le territoire de la Métropole Européenne de Lille ?</div>
+      <div class="radio-group">
+        <label class="radio-option" onclick="selectRadio(this,'mel','oui')">
+          <input type="radio" name="mel" value="oui">
+          <div class="radio-dot"></div>
+          <div class="radio-text"><b>Oui</b> — mon établissement est dans la Métropole Européenne de Lille</div>
+        </label>
+        <label class="radio-option" onclick="selectRadio(this,'mel','non')">
+          <input type="radio" name="mel" value="non">
+          <div class="radio-dot"></div>
+          <div class="radio-text"><b>Non</b> — hors territoire de la Métropole Européenne de Lille</div>
+        </label>
+      </div>
+
+      <div id="qZone" style="display:none">
+        <div class="question-label"><span class="num">3</span>Êtes-vous en zone d'activité économique (ZAE) ?</div>
+        <div class="radio-group">
+          <label class="radio-option" onclick="selectRadio(this,'zone','oui')">
+            <input type="radio" name="zone" value="oui">
+            <div class="radio-dot"></div>
+            <div class="radio-text"><b>Oui</b> — zone d'activité économique
+              <small>Parc d'activités, zone industrielle, zone commerciale…</small>
+            </div>
+          </label>
+          <label class="radio-option" onclick="selectRadio(this,'zone','non')">
+            <input type="radio" name="zone" value="non">
+            <div class="radio-dot"></div>
+            <div class="radio-text"><b>Non</b> — hors zone d'activité</div>
+          </label>
+        </div>
+      </div>
+
+      <div class="question-label" style="margin-top:24px">
+        <span class="num" id="numSecteur">3</span>
+        Votre secteur d'activité <span class="optional-tag">(optionnel)</span>
+      </div>
+      <div class="select-wrap">
+        <select id="selectSecteur" onchange="state.secteur=this.value">
+          <option value="">— Sélectionnez votre secteur —</option>
+          <option value="medical">🏥 Établissement médico-social (EHPAD, SSIAD, IME…)</option>
+          <option value="proprete">🧹 Secteur de la propreté</option>
+          <option value="autre">🏢 Autre secteur</option>
+        </select>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" onclick="goTo(2)">Voir mes obligations →</button>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 2 : Mes obligations -->
+    <div class="etape" id="etape2">
+      <div id="statutContent"></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goTo(1)">← Modifier</button>
+        <button class="btn-primary" onclick="goTo(3)">Voir mes ressources →</button>
+      </div>
+    </div>
+
+    <!-- ÉTAPE 3 : Mes ressources -->
+    <div class="etape" id="etape3">
+      <div id="ressourcesContent"></div>
+
+      <div class="faq-section">
+        <div class="faq-title">❓ Questions fréquentes</div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">C'est quoi un Plan de Déplacements de la Mobilité Employeur (PDME) ? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Le PDME est un document élaboré par l'employeur (diagnostic + plan d'actions) pour optimiser les déplacements liés à l'employeur (domicile-travail, déplacements professionnels et parties prenantes), en réduisant leurs impacts (financiers, carbone…). Il est <strong>obligatoire pour les établissements de +250 salariés sur la Métropole Européenne de Lille</strong> et doit être transmis à la DREAL et à la Métropole Européenne de Lille. <a href="https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000023086525/LEGISCTA000023069065?anchor=LEGIARTI000039785105#LEGIARTI000039785105" target="_blank">→ Base légale (Légifrance)</a> · <a href="https://www.hauts-de-france.developpement-durable.gouv.fr/IMG/pdf/annexe1_plan_action_detaille_vf.pdf" target="_blank">PPA août 2025</a></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Accord de mobilité vs plan de mobilité : quelle différence ? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">L'<strong>accord de mobilité</strong> est négocié lors des <a href="https://travail-emploi.gouv.fr/les-negociations-obligatoires-dans-lentreprise-theme-periodicite-et-deroulement" target="_blank">Négociations Annuelles Obligatoires (NAO)</a> entre les représentants du personnel et de la direction. En l'absence d'accord pour les <strong>+50 salariés</strong>, l'employeur doit notifier la <strong>DREETS</strong> de l'absence d'accord et mettre en place un <strong>plan de mobilité</strong>. Les deux visent à optimiser les déplacements en termes de coût, qualité de vie et impact carbone.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">À qui envoyer mon Plan de Mobilité ? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Le plan doit être transmis à la <strong>DREAL Hauts-de-France</strong> et à la <strong>Métropole Européenne de Lille (Direction de la Mobilité)</strong>. Ce cadre s'inscrit dans le <a href="https://www.hauts-de-france.developpement-durable.gouv.fr/IMG/pdf/annexe1_plan_action_detaille_vf.pdf" target="_blank">Plan de Protection de l'Atmosphère Hauts-de-France (août 2025)</a>.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Qu'est-ce que le programme Marguerite ? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Le <a href="https://www.programme-marguerite.fr/" target="_blank">programme Marguerite</a> est destiné aux <strong>TPE de moins de 20 salariés</strong> pour découvrir mobilité et logistique durables : accompagnement personnalisé, ateliers pratiques, mise en réseau avec d'autres TPE du territoire.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Qu'est-ce que l'aide Booster Rev3 ? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Le <a href="https://guide-aides.hautsdefrance.fr/dispositif1045" target="_blank">Booster Rev3</a> est un dispositif régional finançant <strong>50% du coût HT</strong> des missions d'accompagnement mobilité (diagnostic, plan…) pour les entreprises de <strong>moins de 250 salariés</strong>, avec un <strong>plafond de subvention de 10 000 €</strong>.</div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">Quel cadre réglementaire s'applique ? <span class="faq-arrow">▼</span></div>
+          <div class="faq-a">Les obligations sont encadrées par le <a href="https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000023086525/LEGISCTA000023069065?anchor=LEGIARTI000039785105#LEGIARTI000039785105" target="_blank">Code des transports (Légifrance)</a> et s'inscrivent dans le <a href="https://www.hauts-de-france.developpement-durable.gouv.fr/IMG/pdf/annexe1_plan_action_detaille_vf.pdf" target="_blank">Plan de Protection de l'Atmosphère (PPA) Hauts-de-France — août 2025</a>.</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goTo(2)">← Mes obligations</button>
+        <button class="btn-secondary" onclick="resetWidget()">🔄 Recommencer</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span class="footer-text">Un outil porté par les acteurs de la mobilité durable du territoire</span>
+    <div class="footer-links">
+      <a href="https://www.lillemetropole.fr/plan-de-mobilite-employeurs" target="_blank" class="footer-logo">Métropole Européenne de Lille</a>
+      <a href="https://www.reseau-alliances.org/" target="_blank" class="footer-logo">Réseau Alliances</a>
+      <a href="https://www.declic-mobilites.org/" target="_blank" class="footer-logo">Déclic Mobilités</a>
+      <a href="https://hautsdefrance.cci.fr/cci-grand-lille/mobilite-durable/" target="_blank" class="footer-logo">CCI Grand Lille</a>
+      <a href="https://www.bipiz.org/fr/" target="_blank" class="footer-logo">Bipiz</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let state = { salaries: 0, mel: null, zone: null, secteur: '' };
+
+function updateSlider(el) {
+  const v = parseInt(el.value);
+  state.salaries = v;
+  document.getElementById('sliderVal').textContent = v >= 300 ? '+250' : v;
+  let hint = 'Déplacez le curseur';
+  if (v >= 250) hint = '⚠ Plan de Mobilité Employeur obligatoire (Métropole Européenne de Lille)';
+  else if (v >= 50) hint = '⚠ Accord ou plan de mobilité requis (Métropole Européenne de Lille)';
+  else if (v >= 20) hint = '→ Accompagnement possible par la Métropole Européenne de Lille';
+  else if (v > 0) hint = '🌸 Éligible programme Marguerite (CCI)';
+  document.getElementById('sliderHint').textContent = hint;
+  const pct = (v / 300) * 100;
+  el.style.background = `linear-gradient(to right, #3ECDC5 0%, #3ECDC5 ${pct}%, #d0e8e7 ${pct}%, #d0e8e7 100%)`;
+}
+
+function selectRadio(el, name, val) {
+  document.querySelectorAll(`[onclick*=",'${name}',"]`).forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  state[name] = val;
+  if (name === 'mel') {
+    const show = val === 'oui';
+    document.getElementById('qZone').style.display = show ? 'block' : 'none';
+    document.getElementById('numSecteur').textContent = show ? '4' : '3';
+    if (!show) state.zone = null;
+  }
+}
+
+function goTo(step) {
+  if (step === 2) buildStatut();
+  if (step === 3) buildRessources();
+  document.querySelectorAll('.etape').forEach((e, i) => e.classList.toggle('visible', i + 1 === step));
+  document.querySelectorAll('.step-btn').forEach((b, i) => {
+    b.classList.remove('active','done');
+    if (i + 1 === step) b.classList.add('active');
+    if (i + 1 < step) b.classList.add('done');
+  });
+  document.getElementById('widget').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildStatut() {
+  const s = state.salaries;
+  const mel = state.mel;
+  const zone = state.zone;
+  const sec = state.secteur;
+  const display = s >= 300 ? '+250' : s;
+
+  let tags = `<span class="profil-tag">👥 ${display} salarié(s)</span>`;
+  if (mel === 'oui') tags += `<span class="profil-tag">📍 Métropole Européenne de Lille</span>`;
+  if (mel === 'non') tags += `<span class="profil-tag">📍 Hors Métropole Européenne de Lille</span>`;
+  if (zone === 'oui') tags += `<span class="profil-tag">🏭 Zone d'activité</span>`;
+  if (sec === 'medical') tags += `<span class="profil-tag">🏥 Médico-social</span>`;
+  if (sec === 'proprete') tags += `<span class="profil-tag">🧹 Propreté</span>`;
+
+  let html = `<div class="profil-recap">Votre profil : ${tags}</div>`;
+
+  if (!mel) {
+    html += panel('info', 'ℹ Complétez votre profil', 'Renseignez votre domiciliation pour obtenir une analyse précise de vos obligations.');
+    return set(html);
+  }
+
+  if (s === 0) {
+    html += panel('info', 'ℹ Renseignez le nombre de salariés', 'Déplacez le curseur pour obtenir une analyse personnalisée.');
+    return set(html);
+  }
+
+  // Obligations
+  if (mel === 'oui' && s >= 250) {
+    html += panel('obligatoire', '⚠ OBLIGATION LÉGALE — Plan de Déplacements de la Mobilité Employeur (PDME)',
+      `En tant qu'établissement de <strong>+250 salariés domicilié sur le territoire de la Métropole Européenne de Lille</strong>, vous devez mettre en place et transmettre un <strong>Plan de Déplacements de la Mobilité Employeur (PDME)</strong>.<br><br>
+      📬 <strong>Envoi obligatoire :</strong> DREAL Hauts-de-France + Métropole Européenne de Lille (Direction de la Mobilité)<br><br>
+      📖 <a href="https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000023086525/LEGISCTA000023069065?anchor=LEGIARTI000039785105#LEGIARTI000039785105" target="_blank">Base légale — Code des transports (Légifrance)</a> · <a href="https://www.hauts-de-france.developpement-durable.gouv.fr/IMG/pdf/annexe1_plan_action_detaille_vf.pdf" target="_blank">Plan de Protection de l'Atmosphère HdF (août 2025)</a>`);
+  }
+
+  if (mel === 'oui' && s >= 50 && s < 250) {
+    html += panel('obligatoire', '⚠ OBLIGATION — Accord ou Plan de Mobilité',
+      `Pour les établissements de <strong>50 à 249 salariés sur la Métropole Européenne de Lille</strong>, un <strong>accord de mobilité négocié lors des NAO</strong> (Négociations Annuelles Obligatoires) est requis. En l'absence d'accord, l'employeur doit notifier la DREETS et mettre en place un <strong>plan de mobilité</strong>.<br><br>
+      📖 <a href="https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000023086525/LEGISCTA000023069065?anchor=LEGIARTI000039785105#LEGIARTI000039785105" target="_blank">Base légale — Code des transports (Légifrance)</a> · <a href="https://www.hauts-de-france.developpement-durable.gouv.fr/IMG/pdf/annexe1_plan_action_detaille_vf.pdf" target="_blank">Plan de Protection de l'Atmosphère HdF (août 2025)</a>`);
+  }
+
+  // Opportunités
+  if (mel === 'oui' && zone === 'oui') {
+    html += panel('opportunite', '🤝 OPPORTUNITÉ — Accompagnement Métropole Européenne de Lille (Zone d\'activité)',
+      `Votre implantation dans une <strong>zone d'activité économique</strong> vous rend éligible à un <strong>accompagnement gratuit par la Métropole Européenne de Lille</strong> pour votre démarche mobilité. Contactez la Direction de la Mobilité.`);
+  }
+
+  if (s > 0 && s < 250) {
+    html += panel('opportunite', '💶 OPPORTUNITÉ — Aide Booster Rev3 (Région Hauts-de-France)',
+      `En tant qu'entreprise de <strong>moins de 250 salariés</strong>, vous pouvez bénéficier du <strong>Booster Rev3</strong> pour financer vos missions d'accompagnement mobilité :<br><br>
+      ✅ <strong>50% du coût HT</strong> pris en charge · <strong>Plafond de subvention : 10 000 €</strong><br>
+      Applicable aux missions de prestataires spécialisés (diagnostic, plan de mobilité…) dont l'<strong>offre d'accompagnement du Réseau Alliances</strong>.<br><br>
+      📎 <a href="https://guide-aides.hautsdefrance.fr/dispositif1045" target="_blank">Consulter le dispositif Booster Rev3</a> · <a href="https://www.reseau-alliances.org/" target="_blank">Offre Réseau Alliances</a>`);
+  }
+
+  if (s > 0 && s < 20) {
+    html += panel('opportunite', '🌸 OPPORTUNITÉ — Programme Marguerite (CCI Grand Lille)',
+      `En tant que <strong>TPE de moins de 20 salariés</strong>, vous êtes éligible au <strong>programme Marguerite</strong> : accompagnement personnalisé, ateliers pratiques et mise en réseau pour découvrir la mobilité et logistique durables.<br><br>
+      📎 <a href="https://www.programme-marguerite.fr/" target="_blank">Programme Marguerite — CCI Grand Lille</a>`);
+  }
+
+  if (mel === 'non') {
+    html += panel('info', 'ℹ Hors territoire de la Métropole Européenne de Lille',
+      `Les obligations spécifiques à la Métropole Européenne de Lille ne s'appliquent pas directement à votre établissement. Les ressources régionales et nationales restent accessibles — découvrez-les à l'étape suivante.`);
+  }
+
+  if (mel === 'oui' && s > 0 && s < 50) {
+    html += panel('info', 'ℹ Pas d\'obligation réglementaire',
+      `Votre structure n'est pas encore soumise à obligation légale, mais de nombreuses aides et ressources existent pour <strong>engager une démarche volontaire</strong> de mobilité durable.`);
+  }
+
+  set(html);
+}
+
+function panel(type, titre, corps) {
+  return `<div class="statut-panel ${type}"><div class="statut-titre">${titre}</div><p>${corps}</p></div>`;
+}
+function set(html) { document.getElementById('statutContent').innerHTML = html; }
+
+// RESSOURCES DATA
+const RESSOURCES = [
+  {
+    icon:'🌱', bg:'#e8f8f7',
+    titre:"S'initier au management de la mobilité",
+    desc:"Premiers pas, webinaires et temps conviviaux pour découvrir le sujet.",
+    liens:[{ l:"Parcours Déclic Mobilités (Réseau Alliances)", u:"https://www.reseaualliances.org/declic-mobilites" }]
+  },
+  {
+    icon:'🤝', bg:'#e8f0f8',
+    titre:"Partager avec ses pairs",
+    desc:"Communautés et événements pour échanger avec d'autres employeurs engagés.",
+    liens:[
+      { l:"Communauté Déclic Mobilité", u:"https://www.reseaualliances.org/declic-mobilites" },
+      { l:"Événements Tous à Biclou", u:"https://www.tousabiclou.fr" },
+      { l:"Communauté Employeur Pro Vélo", u:"https://www.employeurprovelo.fr" }
+    ]
+  },
+  {
+    icon:'🎓', bg:'#f5f0e8',
+    titre:"Se former au management de la mobilité",
+    desc:"Formations pour les référents mobilité, du niveau découverte à expert.",
+    liens:[{ l:"Formations Déclic Mobilités", u:"https://www.reseaualliances.org/declic-mobilites" }]
+  },
+  {
+    icon:'📋', bg:'#fdf0e8',
+    titre:"Se mettre en conformité",
+    desc:"Obligations légales et modalités de dépôt du plan de mobilité.",
+    liens:[
+      { l:"Base légale (Légifrance)", u:"https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000023086525/LEGISCTA000023069065?anchor=LEGIARTI000039785105#LEGIARTI000039785105" },
+      { l:"Plan de Protection de l'Atmosphère HdF", u:"https://www.hauts-de-france.developpement-durable.gouv.fr/IMG/pdf/annexe1_plan_action_detaille_vf.pdf" },
+      { l:"Métropole Européenne de Lille – Mobilité", u:"https://www.lillemetropole.fr/plan-de-mobilite-employeurs" }
+    ],
+    cond: () => state.mel === 'oui' && state.salaries >= 50
+  },
+  {
+    icon:'🛠', bg:'#eef5e8',
+    titre:"Faire un plan de mobilité en autonomie",
+    desc:"Outils clés en main pour les structures de moins de 200 salariés.",
+    liens:[{ l:"Outils 2R Aventure", u:"https://www.2raventure.fr" }],
+    cond: () => state.salaries > 0 && state.salaries < 200
+  },
+  {
+    icon:'🔍', bg:'#e8f0f8',
+    titre:"Diagnostic d'accessibilité gratuit",
+    desc:"Ilevia réalise gratuitement un diagnostic d'accessibilité en transport en commun de votre site.",
+    liens:[{ l:"Contacter Ilevia", u:"https://www.ilevia.fr" }]
+  },
+  {
+    icon:'👩‍💼', bg:'#f0e8f5',
+    titre:"Identifier des experts pour vous accompagner",
+    desc:"Prestataires spécialisés, avec aide financière possible via le Booster Rev3 (50% du coût HT, plafond 10 000 €).",
+    liens:[
+      { l:"2R Aventure", u:"https://www.2raventure.fr" },
+      { l:"Pocheco", u:"https://www.pocheco.com" },
+      { l:"Réseau Alliances", u:"https://www.reseau-alliances.org/", cls:'opport' },
+      { l:"Aide Booster Rev3 →", u:"https://guide-aides.hautsdefrance.fr/dispositif1045", cls:'opport' }
+    ]
+  },
+  {
+    icon:'💡', bg:'#fefce8',
+    titre:"S'inspirer",
+    desc:"Veilles, newsletters et événements pour rester informé des bonnes pratiques.",
+    liens:[
+      { l:"Newsletter Déclic Mobilité", u:"https://www.declic-mobilites.org/inscription-newsletter" },
+      { l:"Newsletter 2R Aventure", u:"https://2raventure.com/newsletter/" },
+      { l:"Bipiz – bonnes pratiques", u:"https://www.bipiz.org/fr/" },
+      { l:"World Forum (WFRE)", u:"https://www.wfre.org" }
+    ]
+  },
+  {
+    icon:'🏅', bg:'#fff8e8',
+    titre:"Se faire labelliser Employeur Pro Vélo",
+    desc:"Valorisez votre engagement cyclable et attirez des talents.",
+    liens:[{ l:"Démarche Employeur Pro Vélo", u:"https://www.employeurprovelo.fr" }]
+  },
+  {
+    icon:'🚴', bg:'#e8f8f7',
+    titre:"Animer la démarche mobilité",
+    desc:"Challenges, jeux et ateliers pour embarquer vos équipes.",
+    liens:[
+      { l:"Challenge Mobilité Hauts-de-France", u:"https://challenge-mobilite-hdf.fr/" },
+      { l:"Mai à Vélo", u:"https://maiavelo.fr/" },
+      { l:"Boîte à outils Mai à Vélo (ADEME)", u:"https://accelerateur-transition-ecologique-ademe.notion.site/1er-au-31-mai-2026-Mai-v-lo-2aa6523d57d780a19e25f3ddd0d1d385" },
+      { l:"Fresque de la Mobilité (CCI)", u:"https://www.fresquedelamobilite.org" },
+      { l:"Jeu des 7 Familles de la Mobilité durable", u:"https://2raventure.com/produit/jeu-des-7-familles-de-la-mobilite-durable/" },
+      { l:"Ateliers vélo Employeur Pro Vélo", u:"https://www.employeurprovelo.fr" }
+    ]
+  },
+  {
+    icon:'🌐', bg:'#e8eef8',
+    titre:"Dispositifs sociaux du territoire",
+    desc:"Découvrir les aides à la mobilité disponibles pour vos salariés.",
+    liens:[{ l:"Mobilimel.fr", u:"https://www.mobilimel.fr" }]
+  },
+  {
+    icon:'🚗', bg:'#f0f5e8',
+    titre:"Optimiser sa flotte",
+    desc:"Diagnostic pour réduire les coûts et l'impact environnemental de votre flotte.",
+    liens:[{ l:"Diagnostic Mobilipro", u:"https://www.mobilipro.fr/" }]
+  },
+  {
+    icon:'🚲', bg:'#e8f8f7',
+    titre:"Se lancer à vélo – Boîtes à vélo",
+    desc:"Pour ceux qui veulent témoigner de leur expérience vélo et inspirer leurs collègues.",
+    liens:[{ l:"Les Boîtes à Vélo", u:"https://lesboitesavelo.org/" }]
+  },
+  {
+    icon:'🌸', bg:'#fce8f5',
+    titre:"Programme Marguerite – CCI Grand Lille",
+    desc:"Dédié aux TPE (<20 salariés) : accompagnement personnalisé, ateliers et mise en réseau pour découvrir mobilité et logistique durables.",
+    liens:[{ l:"Programme Marguerite →", u:"https://www.programme-marguerite.fr/", cls:'opport' }],
+    cond: () => state.salaries > 0 && state.salaries < 20
+  },
+  {
+    icon:'🏥', bg:'#fce8e8',
+    titre:"Ressources – Établissements médico-sociaux",
+    desc:"Outils et fiches pratiques développés par l'ANAP pour EHPAD, IME, SSIAD…",
+    liens:[{ l:"Outils ANAP – mobilité", u:"https://www.anap.fr" }],
+    cond: () => state.secteur === 'medical'
+  },
+  {
+    icon:'🧹', bg:'#e8f0f5',
+    titre:"Ressources – Secteur de la propreté",
+    desc:"Accompagnements et outils spécifiques développés par le FARE Propreté.",
+    liens:[{ l:"FARE Propreté", u:"https://www.fare-proprete.fr" }],
+    cond: () => state.secteur === 'proprete'
+  }
+];
+
+function buildRessources() {
+  const actives = RESSOURCES.filter(r => !r.cond || r.cond());
+  let html = `<div class="ressources-title">🗂 Ressources adaptées à votre profil</div><div class="ressource-cards">`;
+  actives.forEach(r => {
+    const liens = r.liens.map(l =>
+      `<a class="rc-link ${l.cls||''}" href="${l.u}" target="_blank">↗ ${l.l}</a>`
+    ).join('');
+    html += `<div class="ressource-card">
+      <div class="ressource-icon" style="background:${r.bg}">${r.icon}</div>
+      <div class="rc-body">
+        <div class="rc-name">${r.titre}</div>
+        <div class="rc-desc">${r.desc}</div>
+        <div class="rc-links">${liens}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  document.getElementById('ressourcesContent').innerHTML = html;
+}
+
+function toggleFaq(el) {
+  el.classList.toggle('open');
+  const a = el.nextElementSibling;
+  a.style.display = a.style.display === 'block' ? 'none' : 'block';
+}
+
+function resetWidget() {
+  state = { salaries: 0, mel: null, zone: null, secteur: '' };
+  const sl = document.getElementById('slider');
+  sl.value = 0;
+  updateSlider(sl);
+  document.querySelectorAll('.radio-option').forEach(e => e.classList.remove('selected'));
+  document.getElementById('selectSecteur').value = '';
+  document.getElementById('qZone').style.display = 'none';
+  document.getElementById('numSecteur').textContent = '3';
+  goTo(1);
+}
+</script>
+</body>
+</html>
