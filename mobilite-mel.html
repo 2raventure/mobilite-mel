@@ -527,9 +527,16 @@
           <em id="sliderHint">Déplacez le curseur</em>
         </div>
       </div>
-      <input type="range" id="slider" min="0" max="300" value="0" oninput="updateSlider(this)" />
+      <input type="range" id="slider" min="0" max="260" value="0" oninput="updateSlider(this)" />
       <div class="slider-ticks">
-        <span>0</span><span>20</span><span>50</span><span>100</span><span>200</span><span>250</span><span>+250</span>
+        <div class="slider-ticks" style="position:relative; height:18px;">
+        <span style="position:absolute;left:0%">0</span>
+        <span style="position:absolute;left:7.7%">20</span>
+        <span style="position:absolute;left:19.2%">50</span>
+        <span style="position:absolute;left:38.5%">100</span>
+        <span style="position:absolute;left:76.9%">200</span>
+        <span style="position:absolute;left:96.2%;transform:translateX(-50%)">250</span>
+        <span style="position:absolute;right:0;transform:translateX(0)">+</span>
       </div>
 
       <div class="question-label" style="margin-top:24px"><span class="num">2</span>Votre site est-il domicilié sur le territoire de la Métropole Européenne de Lille ?</div>
@@ -664,7 +671,7 @@ function updateSlider(el) {
   else if (v >= 20) hint = '→ Accompagnement possible par la Métropole Européenne de Lille';
   else if (v > 0) hint = '🌸 Éligible programme Marguerite (CCI)';
   document.getElementById('sliderHint').textContent = hint;
-  const pct = (v / 300) * 100;
+  const pct = (v / 260) * 100;
   el.style.background = `linear-gradient(to right, #3ECDC5 0%, #3ECDC5 ${pct}%, #d0e8e7 ${pct}%, #d0e8e7 100%)`;
 }
 
