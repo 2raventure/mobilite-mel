@@ -528,8 +528,7 @@
         </div>
       </div>
       <input type="range" id="slider" min="0" max="260" value="0" oninput="updateSlider(this)" />
-      <div class="slider-ticks">
-        <div class="slider-ticks" style="position:relative; height:18px;">
+      <div class="slider-ticks" style="position:relative; height:18px;">
         <span style="position:absolute;left:0%">0</span>
         <span style="position:absolute;left:7.7%">20</span>
         <span style="position:absolute;left:19.2%">50</span>
@@ -647,12 +646,11 @@
   <div class="footer">
     <span class="footer-text">Un outil porté par les acteurs de la mobilité durable du territoire</span>
     <div class="footer-links">
-      <a href="https://2raventure.com/" target="_blank" class="footer-logo">2R Aventure</a>
       <a href="https://www.lillemetropole.fr/plan-de-mobilite-employeurs" target="_blank" class="footer-logo">Métropole Européenne de Lille</a>
       <a href="https://www.reseau-alliances.org/" target="_blank" class="footer-logo">Réseau Alliances</a>
       <a href="https://www.declic-mobilites.org/" target="_blank" class="footer-logo">Déclic Mobilités</a>
       <a href="https://hautsdefrance.cci.fr/cci-grand-lille/mobilite-durable/" target="_blank" class="footer-logo">CCI Grand Lille</a>
-      
+      <a href="https://www.bipiz.org/fr/" target="_blank" class="footer-logo">Bipiz</a>
     </div>
   </div>
 
@@ -783,14 +781,14 @@ const RESSOURCES = [
     icon:'🌱', bg:'#e8f8f7',
     titre:"S'initier au management de la mobilité",
     desc:"Premiers pas, webinaires et temps conviviaux pour découvrir le sujet.",
-    liens:[{ l:"Parcours Déclic Mobilités (Réseau Alliances)", u:"https://www.declic-mobilites.org/" }]
+    liens:[{ l:"Parcours Déclic Mobilités (Réseau Alliances)", u:"https://www.reseaualliances.org/declic-mobilites" }]
   },
   {
     icon:'🤝', bg:'#e8f0f8',
     titre:"Partager avec ses pairs",
     desc:"Communautés et événements pour échanger avec d'autres employeurs engagés.",
     liens:[
-      { l:"Communauté Déclic Mobilité", u:"https://www.declic-mobilites.org/" },
+      { l:"Communauté Déclic Mobilité", u:"https://www.reseaualliances.org/declic-mobilites" },
       { l:"Événements Tous à Biclou", u:"https://www.tousabiclou.fr" },
       { l:"Communauté Employeur Pro Vélo", u:"https://www.employeurprovelo.fr" }
     ]
@@ -799,7 +797,7 @@ const RESSOURCES = [
     icon:'🎓', bg:'#f5f0e8',
     titre:"Se former au management de la mobilité",
     desc:"Formations pour les référents mobilité, du niveau découverte à expert.",
-    liens:[{ l:"Formations Déclic Mobilités", u:"https://www.declic-mobilites.org/declic-mobilites/formation-management-mobilite" }]
+    liens:[{ l:"Formations Déclic Mobilités", u:"https://www.reseaualliances.org/declic-mobilites" }]
   },
   {
     icon:'📋', bg:'#fdf0e8',
@@ -816,21 +814,21 @@ const RESSOURCES = [
     icon:'🛠', bg:'#eef5e8',
     titre:"Faire un plan de mobilité en autonomie",
     desc:"Outils clés en main pour les structures de moins de 200 salariés.",
-    liens:[{ l:"Outils 2R Aventure", u:"https://2raventure.com/plan-de-mobilite/" }],
+    liens:[{ l:"Outils 2R Aventure", u:"https://www.2raventure.fr" }],
     cond: () => state.salaries > 0 && state.salaries < 200
   },
   {
     icon:'🔍', bg:'#e8f0f8',
     titre:"Diagnostic d'accessibilité gratuit",
     desc:"Ilevia réalise gratuitement un diagnostic d'accessibilité en transport en commun de votre site.",
-    liens:[{ l:"Contacter Ilevia", u:"https://www.ilevia.fr/cms/institutionnel/plan-de-mobilite-employeur" }]
+    liens:[{ l:"Contacter Ilevia", u:"https://www.ilevia.fr" }]
   },
   {
     icon:'👩‍💼', bg:'#f0e8f5',
     titre:"Identifier des experts pour vous accompagner",
     desc:"Prestataires spécialisés, avec aide financière possible via le Booster Rev3 (50% du coût HT, plafond 10 000 €).",
     liens:[
-      { l:"2R Aventure", u:"https://2raventure.com/conseil-en-mobilite-durable/" },
+      { l:"2R Aventure", u:"https://www.2raventure.fr" },
       { l:"Pocheco", u:"https://www.pocheco.com" },
       { l:"Réseau Alliances", u:"https://www.reseau-alliances.org/", cls:'opport' },
       { l:"Aide Booster Rev3 →", u:"https://guide-aides.hautsdefrance.fr/dispositif1045", cls:'opport' }
@@ -895,14 +893,14 @@ const RESSOURCES = [
     icon:'🏥', bg:'#fce8e8',
     titre:"Ressources – Établissements médico-sociaux",
     desc:"Outils et fiches pratiques développés par l'ANAP pour EHPAD, IME, SSIAD…",
-    liens:[{ l:"Outils ANAP – mobilité", u:"https://www.anap.fr/s/article/developpement-durable-6-fiches-juridiques-pour-securiser-sa-demarche" }],
+    liens:[{ l:"Outils ANAP – mobilité", u:"https://www.anap.fr" }],
     cond: () => state.secteur === 'medical'
   },
   {
     icon:'🧹', bg:'#e8f0f5',
     titre:"Ressources – Secteur de la propreté",
     desc:"Accompagnements et outils spécifiques développés par le FARE Propreté.",
-    liens:[{ l:"FARE Propreté", u:"https://www.monde-proprete.com/mobilite-grand-groupe" }],
+    liens:[{ l:"FARE Propreté", u:"https://www.fare-proprete.fr" }],
     cond: () => state.secteur === 'proprete'
   }
 ];
